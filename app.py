@@ -1,5 +1,4 @@
 import streamlit as st
-import leafmap.foliumap as leafmap
 import folium
 from streamlit_folium import st_folium
 
@@ -81,9 +80,9 @@ with col_map:
         # GCJ-02默认中心（南京，和你截图坐标一致）
         center_lat, center_lon = 32.23, 118.75
     else:
-        # WGS-84坐标系（天地图国际版，海外兼容）
-        tile_url = "https://t0.tianditu.gov.cn/img_w/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=img&STYLE=default&TILEMATRIXSET=w&FORMAT=tiles&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}&tk=你的天地图Key"
-        tile_attr = "&copy; 天地图"
+        # WGS-84坐标系（开源免费瓦片，无需Key）
+        tile_url = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        tile_attr = "&copy; OpenStreetMap contributors"
         center_lat, center_lon = 32.23, 118.75
     
     # -------------------------- 地图初始化 --------------------------
@@ -100,9 +99,6 @@ with col_map:
         control_scale=True,
         prefer_canvas=True  # 优化渲染性能
     )
-    
-    # 添加3D倾斜视角（模拟3D效果）
-    m.fit_bounds([[center_lat-0.005, center_lon-0.005], [center_lat+0.005, center_lon+0.005]])
     
     # -------------------------- 标记点（A/B点） --------------------------
     # 起点A标记
@@ -136,7 +132,7 @@ with col_map:
 st.info("""
 ### 📌 修复说明
 1.  **底图替换**：默认使用高德GCJ-02瓦片，国内网络直接加载，彻底解决空白问题
-2.  **坐标适配**：完美兼容你当前的GCJ-02坐标系，无需切换WGS-84
-3.  **状态同步**：A点设置状态实时同步侧边栏，解决未设置导致的空白
-4.  **3D效果**：通过倾斜视角+缩放模拟3D校园地图，可直接用于航线规划
+2.  **坐标适配**：完美兼容GCJ-02/WGS-84双坐标系
+3.  **状态同步**：A点设置状态实时同步侧边栏
+4.  **无依赖兼容**：移除leafmap依赖，仅用folium，Streamlit Cloud原生支持
 """)
